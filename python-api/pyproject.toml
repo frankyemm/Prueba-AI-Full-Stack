@@ -1,8 +1,14 @@
-[tool.poetry]
+[project]
 name = "python-api"
 version = "0.1.0"
 description = "AI Support Co-Pilot API"
-authors = ["Franky"]
-
-[tool.poetry.dependencies]
-python = "^3.11"
+requires-python = "==3.11.*"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "python-dotenv",
+    "langchain",
+    "langchain-openai",
+    "supabase",
+    "pydantic"
+]
