@@ -1,0 +1,134 @@
+{
+  "name": "AI-Powered Support Co-Pilot Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://prueba-ai-full-stack.vercel.app/process-ticket",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ticket_id\": \"{{ $json.body.record.id }}\",\n  \"description\": \"{{ $json.body.record.description }}\"\n}",
+        "options": {}
+      },
+      "id": "d1e1332f-287b-431f-91de-4248cf0f07eb",
+      "name": "Process Ticket (AI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -448,
+        112
+      ],
+      "retryOnFail": true,
+      "maxRetries": 3,
+      "waitBetweenRetries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.analysis.sentiment }}",
+              "value2": "Negativo"
+            }
+          ]
+        }
+      },
+      "id": "90b38bf4-c6b3-4b6a-922f-47c3b8c41141",
+      "name": "IF Negative Sentiment",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "frankycardona1927@gmail.com",
+        "toEmail": "frankycardona1927@gmail.com",
+        "subject": "⚠️ Alerta: Ticket con sentimiento Negativo",
+        "text": "=Se ha recibido un ticket con sentimiento negativo.\n\nID: {{ $node[\"Process Ticket (AI)\"].json[\"ticket_id\"] }}\nCategoría: {{ $node[\"Process Ticket (AI)\"].json[\"analysis\"][\"category\"] }}\n\nDescripción: {{ $('Webhook').item.json.body.record.description }}",
+        "options": {}
+      },
+      "id": "fdae66d7-8ed2-4e7e-a66a-a6f2877e0f24",
+      "name": "Send Alert Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "9ffade81-ce81-4f06-ad66-17904b0df601",
+      "credentials": {
+        "smtp": {
+          "id": "m4dY8zIUQMhFkFt0",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "88c179ba-6146-4dbd-b81f-f54b3884fe01",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        112
+      ],
+      "id": "672caf8b-b9c7-4a5a-9e00-3591f07d44ff",
+      "name": "Webhook",
+      "webhookId": "88c179ba-6146-4dbd-b81f-f54b3884fe01"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Process Ticket (AI)": {
+      "main": [
+        [
+          {
+            "node": "IF Negative Sentiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Negative Sentiment": {
+      "main": [
+        [
+          {
+            "node": "Send Alert Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Ticket (AI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "abd2d4b1-cebb-458b-86c4-daabda3e600d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9f0c6fe95162d5dc7c68ac5620a02ee850378c9efaf0f3411b1206ca55880022"
+  },
+  "id": "OlAk6vI8ltqc5PNHFJwMJ",
+  "tags": []
+}
