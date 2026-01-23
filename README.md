@@ -42,6 +42,16 @@ El sistema opera en un flujo circular diseñado para ser escalable y asíncrono:
 
 ---
 
+## 🧠 Estrategia de Prompt Engineering
+
+Para garantizar la precisión y consistencia del análisis realizado por la IA, se implementaron las siguientes estrategias:
+
+1.  **Few-Shot Prompting**: Se incluyeron ejemplos representativos en el prompt del sistema para "enseñar" al modelo cómo clasificar correctamente según el tono y el contenido del ticket (ej: distinguir entre un problema técnico y una duda comercial).
+2.  **Structured Output Parsing**: Se utilizó un `PydanticOutputParser` de LangChain. Esto obliga al modelo a responder estrictamente en formato JSON, eliminando el riesgo de recibir texto explicativo innecesario y asegurando que los datos puedan ser insertados directamente en la base de datos sin errores de formato.
+3.  **Context Injection**: El prompt separa claramente las instrucciones de rol (Senior Support Agent) de los datos del ticket, mejorando la comprensión del modelo sobre la tarea específica.
+
+---
+
 ## 🌐 Despliegue
 
 El proyecto se encuentra desplegado y funcional en los siguientes enlaces:
